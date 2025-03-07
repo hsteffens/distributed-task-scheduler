@@ -23,6 +23,7 @@ docker-compose up --build
 **Task Scheduler Prototype**: http://localhost:8080
 **Task Scheduler Service**: http://localhost:3000
 
-
 ## Project architecture
 
+The archictural aspects and desing of this project can be found in this document [Design Document]([https://website-name.com](https://github.com/hsteffens/distributed-task-scheduler/blob/main/Distributed%20Task%20Scheduler.docx
+))
