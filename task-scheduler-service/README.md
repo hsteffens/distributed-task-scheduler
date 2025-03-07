@@ -8,6 +8,7 @@ The task-scheduler-service is a expressjs microservice, that allow users create 
 - Express v4
 - IO Redis v5
 - Node Cron v3
+- WebSocket
 
 ## How to run
 

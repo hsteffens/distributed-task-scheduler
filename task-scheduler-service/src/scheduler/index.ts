@@ -1,11 +1,13 @@
 import cron from "node-cron";
 import redis from "../redis";
+import { Server } from "socket.io";
 
 interface ScheduledJobs {
   [key: string]: cron.ScheduledTask;
 }
 
 const scheduledJobs: ScheduledJobs = {};
+let server: Server;
 
 /**
  * Schedule a new cron job and persist it in Redis.
@@ -22,6 +24,9 @@ export async function scheduleJob(id: string, cronExpression: string, job: strin
         method: 'delete'
       });
     }
+    
+    // Notify clients via WebSockets
+    server.emit("task-executed", { id, job, executed_time: Date.now() });
   }, {
     scheduled: true,
     timezone: "America/Los_Angeles"
@@ -56,7 +61,8 @@ export async function removeJob(id: string) {
 /**
  * Load tasks from Redis at startup.
  */
-export async function loadJobsFromRedis() {
+export async function loadJobsFromRedis(io: Server) {
+  server = io;
   const keys = await redis.keys("task:*");
   for (const key of keys) {
     const task = await redis.hgetall(key);
