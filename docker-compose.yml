@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: task-redis
+    ports:
+      - "6379:6379"
+    restart: always
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./task-scheduler-service
+    container_name: "task-scheduler-service"
+    ports:
+      - "3000:3000"
+    environment:
+      - REDIS_HOST=redis
+      - PORT=6379
+    depends_on:
+      - redis
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./task-scheduler-prototype
+    container_name: "task-scheduler-prototype"
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
